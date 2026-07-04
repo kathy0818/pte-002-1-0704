@@ -1,8 +1,44 @@
 # PTE Core 备考素材整理 / PTE Core Prep Materials
 
-本仓库把 PTE **学术类**模考的整页长截图，按 **PTE Core** 需要的题型，逐题裁剪成单独图片（每张都**带答案/解析**），方便刷题复习。
+本仓库把 PTE **学术类**模考（完整模考 **43B**，8.7 新考试版本；提交 2026-07-03 17:45；总分 **29**：听力 32 / 阅读 51 / 口语 12 / 写作 21）的逐题裁剪截图，排版成干净可打印的**错题与详解·整理卷 PDF**（做法与命名沿用姊妹仓库 `pte-002-0628` 的 2B 套）。
 
-This repo slices the full-page PTE **Academic** mock-exam screenshots into **one image per question** (each **includes the answer / feedback**), organized for **PTE Core** practice.
+This repo typesets the per-question crops of a PTE **Academic** mock exam (full mock **43B**) into clean, printable **"wrong-answer & explanation" review PDFs**, following the same process/conventions as the sibling repo's 2B set.
+
+---
+
+## ⭐ 整理卷成品 / Typeset review PDFs（产物）
+
+```
+整理卷/
+├─ PTE模考43B_阅读_整理卷.pdf     ★ 阅读，已完成（15 题，14 页）
+├─ PTE模考43B_听力_整理卷.pdf     ★ 听力，已完成（15 题，12 页）
+├─ PTE模考43B_口语_整理卷.pdf     ★ 口语，仅收录 DI 看图说话 5 题（5 页，含配图）
+├─ PTE模考43B_总整理卷.pdf         ★ 合订本：听·读·说(DI)，30 页
+├─ 阅读/ 听力/ 口语/               各 part 的版本存档（000_….tex + .pdf）
+└─ 总整理卷/                       合订本源文件（.tex + img/）
+```
+
+> **本次范围**：只做了**阅读**与**听力**全部 15 题，口语只收录 **DI 看图说话 5 题**（RA/RS/RTS/ASQ 等口语其它题型、写作均未收录）。
+> **进度：✅ 阅读（000）、✅ 听力（000）、✅ 口语 DI（000）、✅ 合订本 全部完成。**
+
+### ⚠️ 已知缺口 / Known gaps
+
+| 部分 | 缺什么 | 已知信息 | 状态 |
+|------|--------|---------|------|
+| 阅读 R01（FIB #1076）| 第 3–5 空的四选项列表（干扰项）被平台悬浮条挡住 | 正确答案已知：has shed / commitment / urgency | 已在整理卷中标注，待平台"查看原题"补全 |
+| 阅读 R14（MCS-R #45）| 选项 A 文字被平台悬浮条挡住 | 正确答案已知：A | 已标注，待补全 |
+| 听力 Q1（SST #712）| 录音原文文字稿（音频无法转文字）| 你的作答全文已有 | 已标注，待平台"查看原题"补全 |
+| 口语 DI 全部 5 题 | 只有合并总分（如 10/90），无 Content/Pronunciation/Fluency 逐项分；无参考范文 | 作答文字稿(ASR)、配图、录音均已收录 | 据实收录，未展开部分留待补充 |
+
+出新版本 / 有新素材补齐时，流程见 `交接文档/00_总交接文档.md`。
+
+---
+
+## 📁 原始裁剪素材 / Cropped source materials（本仓库另一半内容）
+
+本仓库同时保留了模考的整页长截图，按 **PTE Core** 需要的题型，逐题裁剪成单独图片（每张都**带答案/解析**），是上面整理卷排版时使用的原始素材。
+
+This repo also keeps the full-page PTE mock-exam screenshots sliced into **one image per question** (each **includes the answer / feedback**) — the raw material used to typeset the review PDFs above.
 
 ---
 

@@ -1,0 +1,557 @@
+% PTE Core 模考 43B —— 听力 错题与详解·整理卷  版本 000（自包含）
+% 编译: xelatex 本文件.tex   （需 Noto CJK + TeX Gyre Heros 字体）
+% 本版本无外部图片，单文件即可复现。
+\documentclass[11pt]{article}
+
+% --------- 样式（原 ptestyle.sty，已内联）---------
+% ============================================================
+%  ptestyle.sty  —  PTE 模考错题整理卷 共享样式
+%  编译引擎: XeLaTeX  (中英混排, 需要 Noto CJK 字体)
+% ============================================================
+
+\usepackage[a4paper,margin=2cm,headsep=4mm]{geometry}
+\usepackage{fontspec}
+\usepackage{xeCJK}
+\usepackage[table]{xcolor}
+\usepackage[normalem]{ulem}        % \sout 删除线
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{ragged2e}
+\usepackage{enumitem}
+\usepackage[most]{tcolorbox}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{pifont}                % \ding{51}=✓ \ding{55}=✗（阅读对错标注）
+\usepackage{needspace}
+\usepackage{tikz}
+
+% ---------- 字体 ----------
+\setmainfont{TeX Gyre Heros}            % 拉丁: Helvetica 风格(纤细清晰)
+\setCJKmainfont{Noto Sans CJK SC}
+\setCJKsansfont{Noto Sans CJK SC}
+\newfontfamily\cjkserif{Noto Serif CJK SC}
+\linespread{1.18}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+
+% ---------- 配色 ----------
+\definecolor{cWrong}{HTML}{D32F2F}     % 红  = 修改 / 错误
+\definecolor{cFix}{HTML}{1B7F3B}       % 绿  = 正确建议
+\definecolor{cDelete}{HTML}{1565C0}    % 蓝  = 删除
+\definecolor{cInsert}{HTML}{7B1FA2}    % 紫  = 插入
+\definecolor{cPartial}{HTML}{E07B00}   % 橙  = 部分得分
+\definecolor{cNote}{HTML}{0277BD}      % 蓝  = 注解
+\definecolor{cAccent}{HTML}{16A085}    % 主题青绿(平台主色)
+\definecolor{cWrongBg}{HTML}{FBE0E0}
+\definecolor{cDelBg}{HTML}{DCE8FB}
+\definecolor{cInsBg}{HTML}{EEE0F5}
+\definecolor{cHead}{HTML}{20303A}
+\definecolor{cGrayBox}{HTML}{F4F6F7}
+\definecolor{cModelBg}{HTML}{EAF7EF}
+\definecolor{cYouBg}{HTML}{FFF7F5}
+\definecolor{cNoteBg}{HTML}{EAF3FA}
+\definecolor{cRule}{HTML}{D7DEE2}
+
+% ---------- 行内批改宏 (复刻平台标注) ----------
+% \fix{原词}{正确}  红色删除线 + 绿色上标改正  (修改/拼写/空格)
+\newcommand{\fix}[2]{%
+  \colorbox{cWrongBg}{\textcolor{cWrong}{\sout{#1}}}%
+  \,\textsuperscript{\textcolor{cFix}{\footnotesize #2}}}
+% \del{原词}  蓝色删除线  (应删除)
+\newcommand{\del}[1]{%
+  \colorbox{cDelBg}{\textcolor{cDelete}{\sout{#1}}}%
+  \,\textsuperscript{\textcolor{cDelete}{\footnotesize 删}}}
+% \ins{词}  紫色下划线  (应插入)
+\newcommand{\ins}[1]{%
+  \textsuperscript{\textcolor{cInsert}{\footnotesize $\wedge$}}%
+  \colorbox{cInsBg}{\textcolor{cInsert}{#1}}}
+% \miss{词}  灰色删除线  (口语漏读 / 未作答)
+\newcommand{\miss}[1]{\textcolor{gray}{\sout{#1}}}
+% \add{原词}{改正}  橙色波浪线 + "补"标签  (平台漏标、本卷补标的错误)
+\definecolor{cAdd}{HTML}{E65100}
+\newcommand{\add}[2]{%
+  \textcolor{cAdd}{\uwave{#1}}%
+  \,\textsuperscript{\textcolor{cAdd}{\footnotesize 补：#2}}}
+% 高亮(口语发音): 好/中/差
+\newcommand{\spk}[2]{\textcolor{#1}{#2}}
+
+% ---------- 评分单元格着色 ----------
+\newcommand{\sfull}[1]{\textcolor{cFix}{\bfseries #1}}     % 满分
+\newcommand{\spart}[1]{\textcolor{cPartial}{\bfseries #1}} % 部分
+\newcommand{\szero}[1]{\textcolor{cWrong}{\bfseries #1}}   % 零/低分
+
+% ---------- 分数小标签 ----------
+\newtcbox{\chip}[1][cAccent]{on line, boxsep=2pt, left=4pt, right=4pt, top=1pt,
+  bottom=1pt, arc=3pt, colback=#1, colframe=#1, coltext=white, nobeforeafter,
+  fontupper=\bfseries\footnotesize}
+
+% ---------- 题块小标题 ----------
+\newcommand{\ptesub}[1]{%
+  \par\needspace{2\baselineskip}\smallskip
+  {\color{cAccent}\rule[-0.2ex]{3pt}{1.05em}}\hspace{6pt}%
+  {\bfseries\color{cHead}#1}\par\nopagebreak\smallskip}
+
+% ---------- 题块外框 ----------
+% \begin{qblock}{标号·题型}{右上信息(得分/用时)} ... \end{qblock}
+\newtcolorbox{qblock}[2]{
+  breakable, enhanced, arc=2.5pt,
+  colback=white, colframe=cRule, boxrule=0.6pt,
+  left=11pt, right=11pt, top=8pt, bottom=10pt,
+  toptitle=3pt, bottomtitle=3pt, lefttitle=11pt, righttitle=11pt,
+  colbacktitle=cHead, coltitle=white, fonttitle=\bfseries,
+  title={#1\hfill\normalfont\bfseries\small #2}}
+
+% ---------- 文本块: 题干 / 范文 / 你的作答 / 建议 ----------
+\newtcolorbox{promptbox}{enhanced, breakable, colback=cGrayBox, colframe=cGrayBox,
+  arc=2pt, left=8pt, right=8pt, top=6pt, bottom=6pt, boxrule=0pt}
+\newtcolorbox{modelbox}{enhanced, breakable, colback=cModelBg, colframe=cModelBg,
+  borderline west={3pt}{0pt}{cFix}, arc=1pt, left=8pt, right=8pt, top=6pt, bottom=6pt, boxrule=0pt}
+\newtcolorbox{youbox}{enhanced, breakable, colback=cYouBg, colframe=cYouBg,
+  borderline west={3pt}{0pt}{cWrong}, arc=1pt, left=8pt, right=8pt, top=6pt, bottom=6pt, boxrule=0pt}
+\newtcolorbox{notebox}{enhanced, breakable, colback=cNoteBg, colframe=cNoteBg,
+  borderline west={3pt}{0pt}{cNote}, arc=1pt, left=8pt, right=8pt, top=6pt, bottom=6pt, boxrule=0pt}
+
+% ---------- 评分表 ----------
+% 用法见正文; 这里给表头宏
+\newcommand{\scorehead}{%
+  \rowcolors{2}{cGrayBox}{white}
+  \arrayrulecolor{cRule}}
+
+% ---------- 章节大标题 ----------
+\newcommand{\ptesection}[3]{% #1=中文名 #2=英文名 #3=该项分数
+  \addcontentsline{toc}{section}{#1}%
+  \needspace{6\baselineskip}
+  \begin{tcolorbox}[enhanced, colback=cAccent, colframe=cAccent, sharp corners,
+     left=14pt, right=14pt, top=10pt, bottom=10pt, boxrule=0pt]
+    {\fontsize{20}{24}\selectfont\bfseries\color{white} #1\ \ }%
+    {\large\color{white!85} #2}\hfill
+    {\large\color{white}本项得分\ \ }{\fontsize{22}{24}\selectfont\bfseries\color{white} #3}%
+    \ {\color{white!85}/ 90}
+  \end{tcolorbox}}
+
+% ---------- 题型小节分隔 (口语 RA/RS/DI/RTS/ASQ 等) ----------
+\newcommand{\ptetask}[2]{%
+  \addcontentsline{toc}{subsection}{#1\ #2}%
+  \needspace{4\baselineskip}\medskip
+  \begin{tcolorbox}[enhanced, colback=cHead, colframe=cHead, sharp corners,
+     left=12pt, right=12pt, top=5pt, bottom=5pt, boxrule=0pt]
+    {\large\bfseries\color{white} #1}\ \ {\color{white!80} #2}
+  \end{tcolorbox}\smallskip}
+
+% ---------- 口语 AI 语音识别着色 (复刻平台: 优/良/差 + 停顿) ----------
+\definecolor{cSpkGood}{HTML}{2E9E5B}   % 优 绿
+\definecolor{cSpkOk}{HTML}{C77F00}     % 良 黄/琥珀
+\definecolor{cSpkBad}{HTML}{E0352B}    % 差 红
+\newcommand{\sg}[1]{\textcolor{cSpkGood}{#1}}   % 优
+\newcommand{\sy}[1]{\textcolor{cSpkOk}{#1}}     % 良
+\newcommand{\sr}[1]{\textcolor{cSpkBad}{#1}}    % 差
+\newcommand{\smiss}[1]{\textcolor{cSpkBad}{\sout{#1}}}  % 漏读 (红删除线)
+\newcommand{\pse}{{\color{gray}\,/\,}}          % 停顿
+\newcommand{\asrlegend}{{\footnotesize\color{gray}AI 语音识别\quad
+  {\color{cSpkGood}\textbullet}\,优\ \ {\color{cSpkOk}\textbullet}\,良\ \
+  {\color{cSpkBad}\textbullet}\,差\ \ {\color{gray}/}\,停顿\ \
+  {\color{cSpkBad}\sout{词}}\,漏读}}
+\newtcolorbox{asrbox}{enhanced, breakable, colback=white, colframe=cRule,
+  boxrule=0.6pt, arc=1pt, left=8pt, right=8pt, top=6pt, bottom=6pt}
+
+% ---------- 中文翻译行 ----------
+\newcommand{\zh}[1]{{\footnotesize\textcolor{cNote}{\textbf{译}}\ \textcolor{gray}{#1}}}
+
+% ---------- 阅读填空 / 选择 对错标注 ----------
+\newcommand{\rok}[1]{{\color{cFix}\ding{51}\,#1}}                 % 选对(绿勾 + 词)
+\newcommand{\rno}[2]{{\color{cWrong}\ding{55}\,\sout{#1}}\,{\footnotesize\color{cFix}(答案:\,#2)}}  % 选错: 你的(红删) + (答案:正确)
+\newcommand{\rblank}[1]{{\color{cFix}\underline{\,#1\,}}}         % 直接给空的正确答案(无你的作答时)
+
+% ---------- 听力专用 ----------
+\newcommand{\hiw}[2]{{\color{cWrong}\uline{#1}}\,{\footnotesize\color{cFix}(听:#2)}} % HIW: 屏幕错词(红下划线)+ 实际读音
+\newcommand{\lhit}[1]{{\color{cFix}#1}}                           % WFD: 命中的词(绿)
+\newcommand{\lmiss}[1]{{\color{cWrong}\sout{#1}}}                 % WFD: 多余/错误的词(红删, 1B 配色)
+% ---- WFD 逐词批改 · 本套 2B 平台配色（与 1B 相反）：绿=命中 / 红括号=漏写 / 灰删除线=多写或听错 ----
+% 说明: 2B 平台把"漏写"标红(加括号)、"多写/听错"标灰删除线; 本卷忠于原图按此复刻。
+\newcommand{\womit}[1]{{\color{cWrong}(#1)}}                      % WFD: 漏写(正确答案有、你没写)——红色括号
+\newcommand{\wbad}[1]{{\color{gray}\sout{#1}}}                    % WFD: 多写/听错(你写了但错)——灰删除线
+\newcommand{\wfdlegend}{{\footnotesize\color{gray}WFD 配色：\
+  {\color{cFix}命中}\ \ {\color{cWrong}(漏写)}\ \ {\color{gray}\sout{多写/听错}}}}
+
+% ---------- 颜色图例 ----------
+\newcommand{\ptelegend}{%
+  \begin{tcolorbox}[enhanced, colback=cGrayBox, colframe=cRule, boxrule=0.5pt,
+    arc=2pt, left=10pt, right=10pt, top=6pt, bottom=6pt]
+  {\bfseries\color{cHead}颜色说明\quad}
+  \fix{改}{正}~修改/拼写\quad
+  \del{删}~应删除\quad
+  \ins{插}~应插入\quad
+  \add{补}{改正}~平台漏标(本卷补标)\quad
+  {\color{cFix}\rule{1em}{0.6em}}~范文/正确\quad
+  {\color{cNote}\rule{1em}{0.6em}}~AI 建议
+  \end{tcolorbox}}
+
+% ---------- 页眉页脚 ----------
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+\fancyhead[L]{\footnotesize\color{cHead}\bfseries PTE Core 模考 43B}
+\fancyhead[R]{\footnotesize\color{gray} 错题与详解整理卷}
+\fancyfoot[C]{\footnotesize\color{gray}\thepage}
+
+\begin{document}
+
+% --------- 封面（原 cover.tex）---------
+% ---------- 封面 / 成绩总览 ----------
+\definecolor{mListen}{HTML}{1F3A5F}
+\definecolor{mRead}{HTML}{C2D70B}
+\definecolor{mSpeak}{HTML}{4D4D4D}
+\definecolor{mWrite}{HTML}{A01B7D}
+
+\begin{titlepage}
+\thispagestyle{empty}
+\centering
+\vspace*{1.4cm}
+
+{\fontsize{30}{36}\selectfont\bfseries\color{cHead} PTE Core 模考 43B}\\[4mm]
+{\fontsize{17}{20}\selectfont\color{cAccent}\bfseries 错题与详解 · 整理卷}\\[3mm]
+{\color{gray} APEUni / 猩际 完整模考 43B（8.7 新考试版本）　·　提交时间 2026-07-03 17:45}\\[1.2cm]
+
+% ---- 总分 ----
+\begin{tcolorbox}[width=0.62\textwidth, halign=center, enhanced,
+  colback=cAccent, colframe=cAccent, arc=6pt, boxrule=0pt, top=10pt, bottom=10pt]
+  {\color{white}\large 总分 Overall}\\[2pt]
+  {\fontsize{46}{50}\selectfont\bfseries\color{white} 29}
+\end{tcolorbox}
+
+\vspace{1.0cm}
+
+% ---- 四项分数条形图（条长 = 得分 / 90，比例 1pt = 1/9 cm）----
+\begin{tcolorbox}[width=0.84\textwidth, enhanced, colback=white, colframe=cRule,
+  boxrule=0.8pt, arc=4pt, left=18pt, right=18pt, top=14pt, bottom=14pt]
+\setlength{\tabcolsep}{6pt}\renewcommand{\arraystretch}{1.7}
+\sffamily
+\begin{tabular}{@{}r@{\hskip 8pt}l@{\hskip 10pt}l@{}}
+ \bfseries Listening 听力 & {\color{mListen}\rule{3.56cm}{0.42cm}} & {\bfseries\large 32}\\
+ \bfseries Reading 阅读   & {\color{mRead}\rule{5.67cm}{0.42cm}}   & {\bfseries\large 51}\\
+ \bfseries Speaking 口语  & {\color{mSpeak}\rule{1.33cm}{0.42cm}}  & {\bfseries\large 12}\\
+ \bfseries Writing 写作   & {\color{mWrite}\rule{2.33cm}{0.42cm}}  & {\bfseries\large 21}\\
+\end{tabular}\\[2mm]
+{\footnotesize\color{gray} 满分 90　|　刻度: 条长 = 得分 / 90}
+\end{tcolorbox}
+
+\vspace{0.8cm}
+
+% ---- 本卷收录范围 ----
+\begin{tcolorbox}[width=0.84\textwidth, enhanced, colback=cModelBg, colframe=cFix,
+  boxrule=0pt, borderline west={3pt}{0pt}{cFix}, arc=3pt, left=14pt, right=14pt, top=8pt, bottom=8pt]
+{\bfseries\color{cHead}本卷收录}\quad{\small 本次只做了\textbf{阅读}与\textbf{听力}，另收录口语的 \textbf{DI 看图说话}题；
+共 \textbf{阅读 15 题 · 听力 15 题 · 口语 DI 5 题}。写作及口语其它题型（RA/RS/RTS/ASQ 等）未收录。}
+\end{tcolorbox}
+
+\vfill
+\begin{flushleft}\small\color{gray}
+\textbf{说明:}本卷由本次模考的题目与"答案 \& 解析"截图逐题誊写、重新排版而成,完整保留每道题的
+\emph{题干 / 原文、选项 / 词库、你的作答、正确答案、平台中文解析与逐项得分}。\\
+所有对错按平台标注用颜色标出(\rok{绿勾}=选对; {\color{cWrong}\ding{55}}\,红叉=选错并给出正确答案)。原始截图不可复制、仅能看图,本卷内容均为人工对照誊录,若与原图有出入以原图为准。
+\emph{个别题(阅读 R01 选项 3--5、R14 选项 A)在原图中被平台悬浮条遮挡,已照实标注。}
+\end{flushleft}
+\vspace{4mm}
+\ptelegend
+\end{titlepage}
+
+% --------- 听力正文（原 sec_listening_body.tex）---------
+% ===================== 听力 Listening =====================
+\ptesection{听力}{Listening · SST + MCM-L + FIB-L + HCS + MCS-L + SMW + HIW + WFD}{32}
+
+\vspace{1mm}
+{\small\color{gray} 本部分共 \textbf{15 题}：\textbf{SST 概述口语}Q1、\textbf{MCM-L 多选}Q2--3、\textbf{FIB-L 听力填空（打字）}Q4--5、\textbf{HCS 选最佳概括段}Q6--7、\textbf{MCS-L 单选}Q8--9、\textbf{SMW 选词}Q10、\textbf{HIW 找错词}Q11--12、\textbf{WFD 听写句子}Q13--15。每题保留\textbf{录音原文/文字稿}（MCM-L/HCS/MCS-L/SMW/HIW 均附全文字稿）、你的作答与平台评分，并附\textbf{中文翻译}。
+标注约定：FIB-L 空处 \rok{绿勾}=对、{\color{cWrong}\ding{55}}\,红叉=错并给答案；HIW 屏幕错词用{\color{cWrong}\uline{红下划线}}标出并括注\,{\footnotesize\color{cFix}(听:实际读音)}；WFD 逐词批改本套配色为 \wfdlegend 。
+本套听力官方得分 \textbf{32 / 90}。}
+\vspace{1mm}
+
+{\small\color{gray}\textbf{说明：}Q1 SST 为听录音写概括，\textbf{原图未提供录音原文文字稿}（音频内容无法从截图获取），本版本（000）暂缺并标注；其余题型的录音文字稿复盘页均直接给出，已照抄。}
+\vspace{2mm}
+
+\newcolumntype{Z}{>{\RaggedRight\arraybackslash}X}
+
+% ---------------- Q1 ----------------
+\begin{qblock}{Q1\quad SST \#712\ \ Environmental Conservation}{概述口语 · 评分 \textcolor{cAccent}{\bfseries 7.2 / 12}}
+\ptesub{录音原文 Transcript}
+\begin{promptbox}
+{\color{cWrong}（录音原文：原图未提供，需在平台点本题「查看原题」复制后补入；本版本（000）暂缺。）}
+\end{promptbox}
+\ptesub{你的概述 Your Summary}
+\begin{youbox}
+The \fix{reprot}{report} mainly mentioned \fix{about environment}{environmental} conservation and the clean air on the earth. It also mentioned that \fix{the environment}{environmental} conservation means the quality of life and the economy of \del{the} society. And it also mentioned the responsibility and the sustainable development of the planet. Overall, it mentioned the importance of \fix{the environment}{environmental} conservation.
+\end{youbox}
+\zh{这篇报告主要提到了环境保护和地球清洁空气的问题。它还提到，环境保护意味着生活质量和社会经济。此外，它还提到了责任以及地球的可持续发展。总的来说，它提到了环境保护的重要性。}
+{\footnotesize\color{gray}（平台彩色标注：reprot —— 拼写错误，应为 report；about environment / the environment（两处）—— 均应改为形容词 environmental；economy of the society 中 the 建议删除。）}
+\ptesub{AI 评分明细（满分 12）}
+\begin{notebox}
+{\renewcommand{\arraystretch}{1.35}
+\begin{tabularx}{\linewidth}{@{}l c Z@{}}
+\textbf{单项} & \textbf{得分} & \textbf{AI 建议}\\[2pt]
+Content（内容）& \spart{3.2 / 4} & 内容很棒。\\
+Form（形式）& \sfull{2 / 2} & Form 很棒，这是必拿分数。\\
+Grammar（语法）& \szero{0 / 2} & 语法在 SST 中占分比很重，但其实又非常容易提高。丢分这么严重，有点不应该哦。建议找老师咨询下迅速提高的技巧。\\
+Spelling（拼写）& \spart{1 / 2} & 拼写错 1 个就单词扣 1 分，2 个就会扣 2 分，丢分很可惜哦。\\
+Vocabulary（词汇）& \spart{1 / 2} & PTE 对词汇不要求很难，但需要恰当。\\
+\end{tabularx}}
+\smallskip
+\textbf{本题分值}\ 12 分\qquad\textbf{你的总得分}\ \textcolor{cAccent}{\bfseries 7.2 / 12}\qquad{\footnotesize\color{gray}评分标准 PTEA SST V2.0}
+\end{notebox}
+\smallskip
+{\footnotesize\color{gray}（答题用时 10:00；AI 提升建议：回答的关键内容点不足。）}
+\end{qblock}
+
+% ---------------- Q2 ----------------
+\begin{qblock}{Q2\quad MCM-L \#102\ \ Time Famine}{多选 · 评分 \textcolor{cAccent}{\bfseries 0 / 2}}
+\ptesub{录音原文 Transcript}
+\begin{promptbox}
+A team of researchers finds that shelling out for services that save time can bring greater feelings of life satisfaction than, say, simply buying more stuff. The results appear in the Proceedings of the National Academy of Sciences.
+
+It's safe to say that most of us regularly feel crunched for time. So much so that we are experiencing what Ashley Whillans of the Harvard Business School, the lead author of the study, describes as a ``time famine.'' And like any famine, this chronic lack of time takes its toll on our health.
+
+``When we feel like our to-do lists are longer than the hours that we have time in the day to complete them, we can feel as if our life is spiraling out of control, thereby undermining our personal well-being.''
+
+Well, if time is money, Whillans and her team wondered whether money that's used to buy time could offer some relief. Like paying someone else to clean the house, mow the lawn, or deliver the groceries.
+\end{promptbox}
+\zh{一组研究人员发现，花钱购买节省时间的服务比单纯多买东西更能带来生活满意度，该结果发表于《美国国家科学院院刊》。可以肯定地说，我们大多数人都经常感到时间紧迫，以至于我们正在经历哈佛商学院、该研究主要作者 Ashley Whillans 所描述的"时间饥荒"。和任何饥荒一样，这种长期缺乏时间会损害我们的健康。"当我们觉得待办事项清单比一天里能用来完成它们的时间还长时，我们会感觉生活正在失控，从而损害我们的个人幸福感。"如果说时间就是金钱，Whillans 和她的团队想知道，用来买时间的钱是否能带来一些缓解——比如付钱请人打扫房子、割草坪或者送杂货。}
+\ptesub{题目 Question}
+\begin{notebox}According to the speaker, which services are the time-saving services?\end{notebox}
+\ptesub{选项 Choices（正确项绿色加粗）}
+{\small
+A) Purchasing more supplies and goods.\\
+{\color{cFix}\textbf{B) Hiring someone to walk the dog.}}\\
+C) Making a to-do list and completing it.\\
+{\color{cFix}\textbf{D) Hiring a babysitter to take care of the baby.}}\\
+E) Repairing the computer.}
+\par\smallskip
+\textbf{正确答案}\ \textcolor{cFix}{\bfseries B, D}\qquad\textbf{你的答案}\ {\color{cWrong}\bfseries C}\qquad\textbf{本题得分：}\ {\color{cAccent}\bfseries 0 / 2}\quad{\footnotesize\color{gray}（用时 01:07）}
+\end{qblock}
+
+% ---------------- Q3 ----------------
+\begin{qblock}{Q3\quad MCM-L \#106\ \ Hair}{多选 · 评分 \textcolor{cAccent}{\bfseries 1 / 2}}
+\ptesub{录音原文 Transcript}
+\begin{promptbox}
+All mammals have hair---commonly called fur when it's on your cat or a koala. And the thickness of individual hairs varies from species to species. For example, elephant hairs are more than four times thicker than a strand from an adult human.
+
+``Normally, when the animal is larger, the hair tends to be thicker.''
+
+University of California, San Diego, materials scientist Wen Yang. She's interested in how biological structures like hair hold up under stress. That interest comes from a desire to design better synthetic materials.
+
+Yang's team tested the tensile strength of hair from eight different mammal species, including humans. They subjected those hairs to increasing levels of tension until the fibers broke. The researchers assumed that thick hair---from giraffes, elephants and boars, for example---would be more robust. But they were wrong.
+\end{promptbox}
+\zh{所有哺乳动物都有毛发——长在猫或考拉身上时通常叫皮毛。不同物种间单根毛发的粗细各不相同，例如象毛比成年人的一根头发粗四倍多。"通常动物越大，毛发往往越粗。"加州大学圣地亚哥分校材料科学家 Wen Yang 对生物结构（如毛发）如何承受压力很感兴趣，这一兴趣源于想要设计更好的合成材料。Yang 的团队测试了包括人类在内的八种不同哺乳动物毛发的抗拉强度，让这些毛发承受不断增加的张力，直到纤维断裂。研究人员本以为粗毛（例如长颈鹿、大象和野猪的毛）会更结实，但他们错了。}
+\ptesub{题目 Question}
+\begin{notebox}Which of the following statements about hair are correct?\end{notebox}
+\ptesub{选项 Choices（正确项绿色加粗）}
+{\small
+{\color{cFix}\textbf{A) Generally speaking, the size of an animal is directly proportional to the thickness of its hair.}}\\
+B) Cats have thicker hairs than elephants.\\
+C) The function of hairs is to protect the body.\\
+{\color{cFix}\textbf{D) Different species have different hair thickness.}}\\
+E) The thick hairs on giraffes, elephants are stronger than small animals.}
+\par\smallskip
+\textbf{正确答案}\ \textcolor{cFix}{\bfseries A, D}\qquad\textbf{你的答案}\ \textcolor{cFix}{\bfseries D}\qquad\textbf{本题得分：}\ {\color{cAccent}\bfseries 1 / 2}\quad{\footnotesize\color{gray}（用时 01:05；漏选 A）}
+\end{qblock}
+
+% ---------------- Q4 ----------------
+\begin{qblock}{Q4\quad FIB-L \#4}{听力填空（打字）· 评分 \textcolor{cAccent}{\bfseries 1 / 4}}
+\ptesub{录音原文 Transcript（含填空作答）}
+\begin{promptbox}
+An important question about education is, then, why do some types of students achieve success easily and others struggle to do well? Well, one theory is that there is a \rno{generic}{genetic} reason for academic achievement. What I mean by that is, a certain innate, measurable level of \rno{intellegent}{intelligence}. Another frequently discussed theory is environmental factors, such as the effect of home and family upbringing. A final reason is related to the teaching and learning \rok{process} within educational institutions, and the way it is organized, administered and \rno{excessed}{assessed}.
+\end{promptbox}
+\zh{关于教育的一个重要问题是，为什么有些学生轻易就能取得成功，而另一些却难以做好？一种理论认为，学业成就有其遗传方面的原因，也就是说存在一种与生俱来的、可测量的智力水平。另一种常被讨论的理论是环境因素，比如家庭教养的影响。最后一个原因与教育机构内部的教与学过程，以及其组织、管理和评估的方式有关。}
+\par\smallskip
+\textbf{你的作答：}\ {\color{cWrong}generic, intellegent}, process, {\color{cWrong}excessed}\qquad\textbf{本题得分：}\ {\color{cAccent}\bfseries 1 / 4}\quad{\footnotesize\color{gray}（用时 02:17；仅第 3 空 process 正确，正确为 genetic / intelligence / process / assessed）}
+\end{qblock}
+
+% ---------------- Q5 ----------------
+\begin{qblock}{Q5\quad FIB-L \#7\ \ Language Learning}{听力填空（打字）· 评分 \textcolor{cAccent}{\bfseries 3 / 5}}
+\ptesub{录音原文 Transcript（含填空作答）}
+\begin{promptbox}
+Learning a language in the classroom is never easy and, quite \rno{fractly}{frankly}, it's not the way that most people would choose to learn if they had other \rno{（未作答）}{options}. Having said that, there are plenty of reasons for keeping languages on the school curriculum. For one thing, a fair number of students go on to take jobs in business and commerce that require a \rok{basic} knowledge of a second language. When you talk to young \rok{employees} in top companies, it seems that they had a career plan from the start: they were motivated to find additional things to put on their CVs --- and of course language is one of those added, but \rok{significant} extras.
+\end{promptbox}
+\zh{在课堂上学习一门语言从来都不容易，坦率地说，如果人们还有别的选择，这并不是大多数人会选择的学习方式。话虽如此，学校课程仍保留语言课有很多理由。一方面，相当一部分学生日后会从事需要基本第二语言知识的商业岗位。当你和大公司的年轻员工交谈时，似乎他们从一开始就有职业规划：他们有动力去寻找能写进简历的附加项——语言当然就是其中之一，虽是附加项，却也是重要的加分项。}
+\par\smallskip
+\textbf{你的作答：}\ {\color{cWrong}fractly}, {\color{cWrong}（空）}, basic, employees, significant\qquad\textbf{本题得分：}\ {\color{cAccent}\bfseries 3 / 5}\quad{\footnotesize\color{gray}（用时 01:29；第 1 空 fractly→frankly，第 2 空未作答→options）}
+\end{qblock}
+
+% ---------------- Q6 ----------------
+\begin{qblock}{Q6\quad HCS \#80\ \ Mental Health}{选择最佳概括段 · 评分 \textcolor{cAccent}{\bfseries 1 / 1}}
+\ptesub{录音原文 Transcript}
+\begin{promptbox}
+One of the great contributing factors to mental illness is the idea that we should at all costs and at all times be well. We suffer far more than we should because of how long it can take many of us until we allow ourselves to fall properly and usefully ill. In a crisis, our chances of getting better rely to a significant extent on having the right relationship to our illness: an attitude which is relatively unfrightened by our distress, which isn't overly in love with the idea of seeming at all times `normal', which can allow us to be deranged for a while in order one day to reach a more authentic kind of sanity. It will help us immensely in this quest if the images of mental illness we can draw on at this time do not narrowly imply that our ailment is merely a freakish and pitiable possibility, if we can appeal to images that tease out the universal and dignified themes of our state, so that we do not --- on top of everything else --- have to fear and hate ourselves for being unwell.
+\end{promptbox}
+\zh{导致精神疾病的一大因素，是我们认为自己应当不惜一切代价、任何时候都保持健康。我们所承受的痛苦，往往远超本应承受的程度，因为许多人要花很长时间才能允许自己恰当而有益地"生病"。在危机中，我们能否好转，在很大程度上取决于我们与自身疾病之间是否建立了正确的关系：一种不那么害怕自身痛苦的态度，一种不过分执着于时时表现"正常"的态度——这能让我们暂时"癫狂"一阵子，以便有朝一日达到一种更真实的理智状态。如果此时我们所能借助的精神疾病形象，不狭隘地暗示我们的病痛只是一种古怪而可怜的可能性，而是能借助那些揭示出我们境况中普遍而有尊严的主题的形象，那么这将极大地帮助我们完成这一追寻，让我们不至于在其他一切之外，还要因为生病而害怕、憎恨自己。}
+\ptesub{题目 Question}
+\begin{notebox}Click on the paragraph that best relates to the recording.\end{notebox}
+\ptesub{选项 Choices（正确项绿色加粗）}
+{\small
+A) People are now living under great stress, so we are facing severe mental illness that can cost us a lot. To solve this problem, it is suggested that we have a strong relationship with others, and try our best not to fear or hate ourselves when we are feeling unwell.\\
+{\color{cFix}\textbf{B) There is no need that we should feel well all the time: we can feel disappointed or upset sometimes. We need to find the right relationship with our illness so that it does not cause us too much concern. So we don't necessarily fear or hate it when we feel unwell.}}\\
+C) A freakish and pitiable possibility is that when we are feeling unwell, we are more likely to get deranged. Then, our mind allows us to be more worried and afraid. How bad this situation is largely depends on whether we can reach a more authentic kind of sanity or not.\\
+D) The idea that we should at all costs and at all times be well alleviates our mental illness. Although we can feel deranged occasionally, this is not a normal state. Feeling ill is not proper, useful or dignified, so it implies that we need to rely on a right relationship to deal with it.}
+\par\smallskip
+\textbf{正确答案}\ \textcolor{cFix}{\bfseries B}\qquad\textbf{你的答案}\ \textcolor{cFix}{\bfseries B}\qquad\textbf{本题得分：}\ {\color{cAccent}\bfseries 1 / 1}\quad{\footnotesize\color{gray}（用时 01:31，正确）}
+\end{qblock}
+
+% ---------------- Q7 ----------------
+\begin{qblock}{Q7\quad HCS \#81\ \ What Democracy Breeds}{选择最佳概括段 · 评分 \textcolor{cAccent}{\bfseries 0 / 1}}
+\ptesub{录音原文 Transcript}
+\begin{promptbox}
+In a chapter of Democracy in America entitled why the Americans are often so restless in the midst of their prosperity? De Tocqueville sketched an enduring analysis of the relationship between high expectations and dissatisfaction between political equality and envy. He wrote, when all the prerogatives of birth and fortune have been abolished, when every profession is open to everyone, an ambitious man may think it is easy to launch himself on a great career, and feel that he has been called to no common destiny. But this is a delusion which experience quickly corrects. When inequality is the general rule in society the greatest inequalities attract no attention. But when everything is more or less level, the slightest variation is noticed. That is the reason for the strange melancholy often haunting inhabitants of democracies in the midst of abundance, and of that disgust with life sometimes gripping them even in calm and easy circumstances.
+\end{promptbox}
+\zh{在《论美国的民主》中题为"美国人为何常常在繁荣中焦躁不安"的一章里，托克维尔对高期望与不满、政治平等与嫉妒之间的关系作了历久弥新的分析。他写道，当出身和财富的一切特权都被废除、当人人都能从事任何职业时，一个雄心勃勃的人可能会认为轻而易举就能开创一番伟大事业，觉得自己被赋予了非凡的命运；但这是一种幻觉，经验很快会纠正它。当不平等是社会普遍规则时，最大的不平等也不会引人注意；但当一切大致趋于平等时，最微小的差异都会被察觉。这正是民主国家的居民即便身处富足，也常常被一种奇怪的忧郁困扰，甚至在平静安逸的环境中也会被那种对生活的厌恶所攫住的原因。}
+\ptesub{题目 Question}
+\begin{notebox}Click on the paragraph that best relates to the recording.\end{notebox}
+\ptesub{选项 Choices（正确项绿色加粗）}
+{\small
+A) To launch oneself on a great career, a person needs to be very ambitious and insightful. Even in the calm and easy circumstance, he or she has to pay attention to even the slightest variation in the market, which changes fast in the modern era.\\
+B) What is haunting inhabitants of democracies is dissatisfaction of political inequality. The Americans will not feel melancholy until all the prerogatives of birth and fortune have been abolished. They will feel safer and happier when everything is more or less level.\\
+C) In the midst of their prosperity, every profession is open to every American. People do not have to envy each other, and they believe a completely equal society is no more a delusion. But people with higher expectations tend to feel more disappointed with life.\\
+{\color{cFix}\textbf{D) By analyzing political equality and envy and expectations and dissatisfaction, De Tocqueville mentioned that when everyone is living in a basically equal environment, even the slightest inequality will be noticed. This is the reason that the Americans are often restless even in a cozy circumstance.}}}
+\par\smallskip
+\textbf{正确答案}\ \textcolor{cFix}{\bfseries D}\qquad\textbf{你的答案}\ {\color{cWrong}\bfseries A}\qquad\textbf{本题得分：}\ {\color{cAccent}\bfseries 0 / 1}\quad{\footnotesize\color{gray}（用时 01:17）}
+\end{qblock}
+
+% ---------------- Q8 ----------------
+\begin{qblock}{Q8\quad MCS-L \#123\ \ Parties}{单选 · 评分 \textcolor{cAccent}{\bfseries 1 / 1}}
+\ptesub{录音原文 Transcript}
+\begin{promptbox}
+Since 1852, every US president has been a member of one of the country's two major political parties, the Republican party or the Democratic party. Democrats generally support higher taxes, so they can fund more government programs. Republicans generally prefer lower taxes and smaller government. These two parties tend to reflect relatively moderate political views.
+
+But there are several other smaller parties on the fringes, including the Libertarian, Constitution, Socialist or Green Parties. Or you can just be an independent not affiliated with any party. Third parties are not that big. But they can have a major influence on presidential elections, by taking away votes from the two major party candidates, which in some years can be a deciding factor in the race to become president.
+\end{promptbox}
+\zh{自 1852 年以来，每一任美国总统都属于该国两大主要政党之一——共和党或民主党。民主党通常支持提高税收，以资助更多政府项目；共和党通常倾向于降低税收、缩小政府规模。这两个政党往往反映相对温和的政治立场。但也有其他一些边缘小党，包括自由意志党、宪法党、社会党或绿党，你也可以做一个不隶属任何政党的独立人士。第三方规模不大，但它们能通过从两大党候选人那里分走选票，对总统选举产生重大影响，在某些年份甚至可能成为决定谁当选总统的关键因素。}
+\ptesub{题目 Question}
+\begin{notebox}Which statement about the US parties is NOT true?\end{notebox}
+\ptesub{选项 Choices（正确项绿色加粗）}
+{\small
+A) Apart from the Republican party and the Democratic party, there are other parties as well.\\
+B) Democrats usually want taxes to increase so as to support more government programs.\\
+C) Republicans are unwilling to enlarge the government and often reject higher taxes.\\
+{\color{cFix}\textbf{D) Third parties always play a marginal role in the presidential elections in America.}}}
+\par\smallskip
+\textbf{正确答案}\ \textcolor{cFix}{\bfseries D}\qquad\textbf{你的答案}\ \textcolor{cFix}{\bfseries D}\qquad\textbf{本题得分：}\ {\color{cAccent}\bfseries 1 / 1}\quad{\footnotesize\color{gray}（用时 01:06，正确）}
+\end{qblock}
+
+% ---------------- Q9 ----------------
+\begin{qblock}{Q9\quad MCS-L \#122\ \ Washington}{单选 · 评分 \textcolor{cAccent}{\bfseries 0 / 1}}
+\ptesub{录音原文 Transcript}
+\begin{promptbox}
+Washington is a monumental city, a showcase capital with iconic views. And that's because most planned public projects go through the Commission of Fine Arts, a presidentially appointed panel established by Congress in 1910. The idea was to really lift the image of the city as an important international capital, and to really push that idea of dignity and beauty and all these things that you know really contribute to the image of the city.
+\end{promptbox}
+\zh{华盛顿是一座宏伟的城市，是一个拥有标志性景观的门面首都。这是因为大多数规划中的公共项目都要经过美术委员会审核——这是一个由国会于 1910 年设立、由总统任命成员的专门小组。其设想是真正提升这座城市作为重要国际首都的形象，真正推动那种庄重与美感的理念，以及所有这些真正有助于城市形象的事物。}
+\ptesub{题目 Question}
+\begin{notebox}For what purpose was the Commission of Fine Arts established in the first place?\end{notebox}
+\ptesub{选项 Choices（正确项绿色加粗）}
+{\small
+{\color{cFix}\textbf{A) To provide suggestions and guidance about how to lift the image of Washington.}}\\
+B) To assist presidents with deciding which art projects at Washington should be approved.\\
+C) To create and display beautiful and dignified art works for the city of Washington.\\
+D) To organize and manage the art exhibitions and other events hosted in Washington.}
+\par\smallskip
+\textbf{正确答案}\ \textcolor{cFix}{\bfseries A}\qquad\textbf{你的答案}\ {\color{cWrong}\bfseries B}\qquad\textbf{本题得分：}\ {\color{cAccent}\bfseries 0 / 1}\quad{\footnotesize\color{gray}（用时 00:40）}
+\end{qblock}
+
+% ---------------- Q10 ----------------
+\begin{qblock}{Q10\quad SMW \#36\ \ Stress}{选词补全 · 评分 \textcolor{cAccent}{\bfseries 1 / 1}}
+\ptesub{录音原文 Transcript（结尾被"哔"替换处用 \_\_\_ 表示）}
+\begin{promptbox}
+Management requires a great deal of energy and effort more than most people care to make. One factor that affects managers and inhibits their capacity to provide leadership is stress. Stress has lots of causes, work overload, criticism from workers, and can have negative health effects, including loss of sleep. It's a fact: managers have to deal with stress. Some handle it by making time to be by themselves. Most have some favorite place or pastime, a beach to walk on, maybe a stream to fish in or a game to play with the kids. It's important to have some form of rest and relaxation, creating art, working with your hands, gardening, playing sports. The list goes on. Rest doesn't always mean inactivity. For some people exercise \underline{\hspace{2.2cm}}
+\end{promptbox}
+\zh{管理需要付出比大多数人愿意付出的更多精力和努力。影响管理者、削弱其领导能力的因素之一是压力。压力有很多成因：工作超负荷、来自下属的批评，并可能带来负面健康影响，包括失眠。事实是：管理者必须应对压力。有些人靠留出独处时间来应对；大多数人都有自己喜爱的去处或消遣，比如去海滩散步、去小溪钓鱼，或者陪孩子玩游戏。拥有某种形式的休息与放松很重要——搞艺术创作、动手做事、园艺、运动，诸如此类，不胜枚举。休息并不总是意味着无所事事。对有些人来说，锻炼\underline{\hspace{1.5cm}}}
+\ptesub{题目 Question}
+\begin{notebox}At the end of the recording the lost word or group of words has been replaced by a beep. Select the correct option to complete the recording.\end{notebox}
+\ptesub{选项 Choices（正确项绿色加粗）}
+{\small
+A) is capacity\\
+B) is stress\\
+C) is a waste of time\\
+{\color{cFix}\textbf{D) is rest}}}
+\par\smallskip
+\textbf{正确答案}\ \textcolor{cFix}{\bfseries D}\qquad\textbf{你的答案}\ \textcolor{cFix}{\bfseries D}\qquad\textbf{本题得分：}\ {\color{cAccent}\bfseries 1 / 1}\quad{\footnotesize\color{gray}（用时 01:05，正确）}
+\end{qblock}
+
+% ---------------- Q11 ----------------
+\begin{qblock}{Q11\quad HIW \#216\ \ T Cell}{找错词 · 评分 \textcolor{cAccent}{\bfseries 4 / 4}}
+\ptesub{屏幕文字（错词见下划线，括注实际读音）}
+\begin{promptbox}
+Shhh, keep this podcast a secret. Because new research points to a \hiw{sculptural}{possible} blind spot in airport security screening: it may be easier to sneak something dangerous past security-a box cutter, for example-by also including an obvious and \hiw{mongooses}{innocuous} banned object, like a water bottle, into the mix as a distraction.
+
+Scientists recruited college \hiw{duennas}{students} to find targets on a computer display. Their task: search for lines that formed a T amidst other non-T lines in 10 different experiments. Sometimes the Ts were easy to find, sometimes they were more hidden. When the easy and tough ones appeared with equal frequency, the students found both on the same screen.
+
+When the easy T's appeared two to three times more frequently, the students were more likely to miss the tough ones. But when the students were given extra time, lessening the pressure, they were more able to find both targets almost as quickly.
+
+The study suggests that actual professional \hiw{kneaders}{screeners} need to be just as vigilant in their attention after finding a first piece of contraband in a given bag. And keeping their stress levels as low as possible should help their performance.
+\end{promptbox}
+\zh{嘘，把这期播客保密。因为新研究指出机场安检可能存在一个盲点：混入危险物品（比如美工刀）可能更容易得手，只要同时放入一个明显但无害的违禁物（比如水瓶）作为干扰。科学家招募了大学生，让他们在电脑屏幕上找目标：在 10 组不同实验中，从其他非 T 形线条里找出组成字母 T 的线条。有时候 T 很容易找，有时候更难找。当难易目标出现频率相当时，学生能在同一屏幕上都找到；当容易的 T 出现频率是难的两三倍时，学生更容易漏掉难的那些。但当给学生更多时间、减轻压力后，他们几乎能同样快地找到两种目标。研究表明，真正的专业安检员在包里找到第一件违禁品后，仍需保持同样警觉的注意力；尽量降低压力水平应有助于提升他们的表现。}
+\par\smallskip
+\textbf{你的作答（点击的错词）：}\ sculptural, mongooses, duennas, kneaders\qquad\textbf{本题得分：}\ {\color{cAccent}\bfseries 4 / 4}\quad{\footnotesize\color{gray}（用时 01:14，全对；实际读音：possible / innocuous / students / screeners）}
+\end{qblock}
+
+% ---------------- Q12 ----------------
+\begin{qblock}{Q12\quad HIW \#179\ \ Bone and Weight}{找错词 · 评分 \textcolor{cAccent}{\bfseries 4 / 5}}
+\ptesub{屏幕文字（错词见下划线，括注实际读音）}
+\begin{promptbox}
+Some dinosaurs were really huge. And now we may have a better way to \hiw{envelopment}{estimate} just how heavy these giants were. Researchers have developed a method to weigh dinosaurs, based on laser scans of their skeletons. The study is in the journal Biology Letters.
+
+Looking at a bare human skeleton, how would you guess whether its owner was chubby or svelte? If you calculated how much space the fully-fleshed body occupied, you could \hiw{codify}{multiply} that volume by tissue density to find the weight.
+
+Researchers laser-scanned 14 modern mammal skeletons to create digital models of each body. These 3-D models were unrealistically scrawny, with skin \hiw{dismissed}{stretched} tight over the bones. But their undersized volumes were consistent, measuring in as 21 percent less than the actual animals.
+
+Based on this information, {\color{cWrong}\uline{reasoners}}\,{\footnotesize\color{cFix}(听:researchers)} scanned Giraffatitan bones, added 21 percent to the digital model's volume, and then calculated the dinosaur's weight: about 51,000 pounds. The technique could become the \hiw{insomuch}{preferred} way to estimate mass based on skeletons, improving our understanding of how extinct species lived and moved. And helping paleontologists make earth-shaking discoveries.
+\end{promptbox}
+\zh{有些恐龙体型非常庞大，如今我们也许有了更好的办法来估算这些庞然大物的体重。研究人员基于骨骼的激光扫描开发出一种给恐龙称重的方法，该研究发表于《生物学快报》。看着一具裸露的人类骨架，你要怎么猜它的主人是胖是瘦？如果你计算出完全长满血肉的身体所占的空间，就可以用体积乘以组织密度来求出体重。研究人员对 14 具现代哺乳动物骨骼进行激光扫描，建立了每个身体的数字模型；这些三维模型都不真实地瘦削，皮肤紧绷在骨骼上，但它们体积不足的比例是一致的，都比实际动物少约 21\%。基于这一信息，研究人员对腕龙属（Giraffatitan）的骨骼进行扫描，给数字模型体积增加 21\%，再计算出这只恐龙的体重：约 51,000 磅。这项技术有望成为基于骨骼估算体重的首选方法，有助于我们理解已灭绝物种如何生活和行动，并帮助古生物学家做出惊天动地的发现。}
+\par\smallskip
+\textbf{你的作答（点击的错词）：}\ envelopment, codify, dismissed, insomuch\qquad{\color{cWrong}（漏点 1 处：reasoners，实际读音 researchers）}\qquad\textbf{本题得分：}\ {\color{cAccent}\bfseries 4 / 5}\quad{\footnotesize\color{gray}（用时 01:14；实际读音：estimate / multiply / stretched / researchers / preferred）}
+\end{qblock}
+
+% ---------------- Q13 ----------------
+\begin{qblock}{Q13\quad WFD \#3208}{听写句子 · 评分 \textcolor{cAccent}{\bfseries 5 / 11}}
+\ptesub{正确句子 Correct Sentence}
+\begin{promptbox}
+Always go through the safety rules before handling any class tools.
+\end{promptbox}
+\zh{在操作任何课堂工具之前，务必先了解安全规则。}
+\ptesub{你的作答 Your Answer（逐词批改）}
+\begin{youbox}
+\lhit{Always go through the} \wbad{a safe} \lhit{safety} \womit{rules before handling any class tools} \wbad{roads road when}
+\end{youbox}
+\wfdlegend
+\par\smallskip
+\textbf{本题得分：}\ {\color{cAccent}\bfseries 5 / 11}\quad{\footnotesize\color{gray}（用时 01:02；命中 Always/go/through/the/safety 共 5 词，rules 及其后整段漏写，另多写 a safe / roads road when）}
+\end{qblock}
+
+% ---------------- Q14 ----------------
+\begin{qblock}{Q14\quad WFD \#3197}{听写句子 · 评分 \textcolor{cAccent}{\bfseries 6 / 9}}
+\ptesub{正确句子 Correct Sentence}
+\begin{promptbox}
+Trains help people travel far places much more easily.
+\end{promptbox}
+\zh{火车能让人们更轻松地去往远方。}
+\ptesub{你的作答 Your Answer（逐词批改）}
+\begin{youbox}
+\lhit{Trains} \wbad{Train helps} \lhit{help} \lhit{people} \womit{travel far places} \wbad{go out} \lhit{much more easily}
+\end{youbox}
+\wfdlegend
+\par\smallskip
+\textbf{本题得分：}\ {\color{cAccent}\bfseries 6 / 9}\quad{\footnotesize\color{gray}（用时 00:56；命中 Trains/help/people/much/more/easily 共 6 词，travel far places 漏写，另多写 Train helps / go out）}
+\end{qblock}
+
+% ---------------- Q15 ----------------
+\begin{qblock}{Q15\quad WFD \#3191}{听写句子 · 评分 \textcolor{cAccent}{\bfseries 5 / 12}}
+\ptesub{正确句子 Correct Sentence}
+\begin{promptbox}
+The graph shows that there hasn't been a lot of growth recently.
+\end{promptbox}
+\zh{该图显示，近期增长并不明显。}
+\ptesub{你的作答 Your Answer（逐词批改）}
+\begin{youbox}
+\lhit{The graph shows} \womit{that there hasn't been} \wbad{the a} \womit{lot of growth} \wbad{people go went out} \lhit{recently}
+\end{youbox}
+\wfdlegend
+\par\smallskip
+\textbf{本题得分：}\ {\color{cAccent}\bfseries 5 / 12}\quad{\footnotesize\color{gray}（用时 00:44；命中 The/graph/shows/recently 等共 5 词，that there hasn't been、lot of growth 漏写，另多写 the a / people go went out）}
+\end{qblock}
+
+\end{document}
