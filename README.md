@@ -86,3 +86,16 @@ cropped_questions/        逐题裁剪结果（我要求的）/ per-question cro
 - 每张裁剪图都从题号标题开始，到该题的**评分/答案行**结束。/ Each crop runs from the numbered title down to that question's score/answer line.
 - 已自动**去掉页脚、翻页条**，并**擦除**盖在题目上的站点顶部导航条与右侧浮动按钮。/ Footers, pagination bars, the overlapping site nav-bar, and the floating side-button were removed automatically.
 - 原始截图完整保留在 `original_screenshots/`，未做任何修改。/ Originals are kept untouched in `original_screenshots/`.
+
+## ⚠️ 已知缺口 / Known gaps（需在平台补全 / need the platform）
+原始截图里，站点**顶部导航条**恰好**不透明地压在**下面两处正文上，图片里那部分内容已丢失、无法从截图恢复。相关裁剪图已加**黄色提示条**标注。
+
+In the originals the opaque **site nav-bar** happened to sit right on top of two pieces of real content, so that text is lost and **cannot be recovered from the images**. The affected crops carry a **yellow note banner**.
+
+| 题 / Q | 缺失内容 / Missing | 已知 / Known | 补全方式 / How to fill |
+|---|---|---|---|
+| **R01** FIB #1076 | 第 3–5 空的**干扰项列表** / distractor option lists for blanks 3–5 | 正确答案 3=`has shed` 4=`commitment` 5=`urgency`（满分 5/5，正文里也内嵌显示）| 平台点「查看原题」抄 Choices 第 3/4/5 行 |
+| **R14** MCS-R #45 | **选项 A 的文字** / text of option A | A 是正确答案；B/C/D 已知 | 平台点「查看原题」抄 A) 那一行 |
+
+> 我（AI）无法登录你的 APEUni 账号，所以这两处只能由手上开着平台的人去「查看原题」抄一下。
+> I can't log into your APEUni account, so whoever has the platform open needs to copy these two via "查看原题".
